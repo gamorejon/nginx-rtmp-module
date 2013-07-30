@@ -269,19 +269,36 @@ ngx_rtmp_recv(ngx_event_t *rev)
             s->ping_reset = 1;
             ngx_rtmp_update_bandwidth(&ngx_rtmp_bw_in, n);
             b->last += n;
-            s->in_bytes += n;
-            b_of = (s->ack_size && s->in_bytes < s->in_last_ack) ? 0 : UINT32_MAX;
-
-            if (s->ack_size && s->in_bytes - s->in_last_ack + b_of >= s->ack_size) {
-                
+            b_of = 0;
+            if (s->in_bytes + n => 0 && n < 0)
+            {
+                b_of = s->in_bytes - s->in_last_ack;
+                b_of += n;
+                s->in_bytes = b_of;
                 s->in_last_ack = s->in_bytes;
 
                 ngx_log_debug1(NGX_LOG_DEBUG_RTMP, c->log, 0,
-                        "sending rtmp ack(%d)", s->in_bytes);
+                        "sending overflow rtmp ack(%uD)", s->in_bytes);
 
                 if (ngx_rtmp_send_ack(s, s->in_bytes)) {
                     ngx_rtmp_finalize_session(s);
                     return;
+                }
+            } else {
+
+                s->in_bytes += n;
+
+                if (s->ack_size && s->in_bytes - s->in_last_ack >= s->ack_size) {
+
+                    s->in_last_ack = s->in_bytes;
+
+                    ngx_log_debug1(NGX_LOG_DEBUG_RTMP, c->log, 0,
+                            "sending rtmp ack(%uD)", s->in_bytes);
+
+                    if (ngx_rtmp_send_ack(s, s->in_bytes)) {
+                        ngx_rtmp_finalize_session(s);
+                        return;
+                    }
                 }
             }
         }
