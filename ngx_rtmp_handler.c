@@ -276,7 +276,7 @@ ngx_rtmp_recv(ngx_event_t *rev)
                 
                 s->in_last_ack = s->in_bytes;
 
-                ngx_log_debug1(ngx_log_debug_rtmp, c->log, 0,
+                ngx_log_debug1(NGX_LOG_DEBUG_RTMP, c->log, 0,
                         "sending rtmp ack(%d)", s->in_bytes);
 
                 if (ngx_rtmp_send_ack(s, s->in_bytes)) {
