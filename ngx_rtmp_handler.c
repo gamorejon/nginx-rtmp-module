@@ -202,7 +202,7 @@ ngx_rtmp_recv(ngx_event_t *rev)
     u_char                     *p, *pp, *old_pos;
     size_t                      size, fsize, old_size;
     uint8_t                     fmt, ext;
-    uint32_t                    csid, timestamp;
+    uint32_t                    csid, timestamp, b_of;
 
     c = rev->data;
     s = c->data;
@@ -270,13 +270,14 @@ ngx_rtmp_recv(ngx_event_t *rev)
             ngx_rtmp_update_bandwidth(&ngx_rtmp_bw_in, n);
             b->last += n;
             s->in_bytes += n;
+            b_of = (s->ack_size && s->in_bytes - s->in_last_ack >= 0) ? 0 : UINT32_MAX;
 
-            if (s->ack_size && s->in_bytes - s->in_last_ack >= s->ack_size) {
+            if (s->ack_size && s->in_bytes - s->in_last_ack + b_of >= s->ack_size) {
                 
                 s->in_last_ack = s->in_bytes;
 
-                ngx_log_debug1(NGX_LOG_DEBUG_RTMP, c->log, 0,
-                        "sending RTMP ACK(%D)", s->in_bytes);
+                ngx_log_debug1(ngx_log_debug_rtmp, c->log, 0,
+                        "sending rtmp ack(%d)", s->in_bytes);
 
                 if (ngx_rtmp_send_ack(s, s->in_bytes)) {
                     ngx_rtmp_finalize_session(s);
