@@ -270,7 +270,7 @@ ngx_rtmp_recv(ngx_event_t *rev)
             ngx_rtmp_update_bandwidth(&ngx_rtmp_bw_in, n);
             b->last += n;
             b_of = 0;
-            if (s->in_bytes + n >= 0 && n > 0)
+            if (s->in_bytes + n <= 0 && n > 0)
             {
                 b_of = s->in_bytes - s->in_last_ack;
                 b_of += n;
