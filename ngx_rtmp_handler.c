@@ -270,7 +270,7 @@ ngx_rtmp_recv(ngx_event_t *rev)
             ngx_rtmp_update_bandwidth(&ngx_rtmp_bw_in, n);
             b->last += n;
             s->in_bytes += n;
-            b_of = (s->ack_size && s->in_bytes - s->in_last_ack >= 0) ? 0 : UINT32_MAX;
+            b_of = (s->ack_size && s->in_bytes < s->in_last_ack) ? 0 : UINT32_MAX;
 
             if (s->ack_size && s->in_bytes - s->in_last_ack + b_of >= s->ack_size) {
                 
