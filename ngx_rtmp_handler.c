@@ -300,7 +300,7 @@ ngx_rtmp_recv(ngx_event_t *rev)
                         return;
                     }
                 } else {
-                    b_of = s->in_bytes - s->in_last_ack;
+                    b_of = 0; //s->in_bytes - s->in_last_ack;
                     b_of += n;
                     s->in_bytes = b_of;
                     s->in_last_ack = s->in_bytes;
