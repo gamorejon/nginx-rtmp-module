@@ -299,7 +299,7 @@ ngx_rtmp_recv(ngx_event_t *rev)
                         ngx_rtmp_finalize_session(s);
                         return;
                     }
-                } else {
+                } else if (s->in_bytes > 4000000) {
                     b_of = 0; //s->in_bytes - s->in_last_ack;
                     b_of += n;
                     s->in_bytes = b_of;
