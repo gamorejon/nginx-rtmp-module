@@ -284,14 +284,16 @@ ngx_rtmp_recv(ngx_event_t *rev)
                     ngx_rtmp_finalize_session(s);
                     return;
                 }
-            } else if (s->in_last_ack > 4000000) {
+            } else if (s->in_bytes > 4000000000) {
                 ngx_log_debug1(NGX_LOG_DEBUG_RTMP, c->log, 0,
                         "last_ack(%uD)" , s->in_last_ack);
                 ngx_log_debug1(NGX_LOG_DEBUG_RTMP, c->log, 0,
                         "ack_size(%uD)", s->ack_size);
                 ngx_log_debug1(NGX_LOG_DEBUG_RTMP, c->log, 0,
-                        "ack(%uD)", s->in_bytes);
-                /*b_of = 0; 
+                        "in_bytes(%uD)", s->in_bytes);
+                ngx_log_debug1(NGX_LOG_DEBUG_RTMP, c->log, 0,
+                        "n(%uD)", n);
+                b_of = 0; 
                 b_of += n;
                 s->in_bytes = b_of;
                 s->in_last_ack = s->in_bytes;
@@ -302,7 +304,7 @@ ngx_rtmp_recv(ngx_event_t *rev)
                 if (ngx_rtmp_send_ack(s, s->in_bytes)) {
                     ngx_rtmp_finalize_session(s);
                     return;
-                }*/
+                }
             }
         }
 
