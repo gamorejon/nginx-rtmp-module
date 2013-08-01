@@ -296,7 +296,7 @@ ngx_rtmp_recv(ngx_event_t *rev)
                 b_of = 0; 
                 b_of += n;
                 s->in_bytes = b_of;
-                s->in_last_ack = s->in_bytes;
+                s->in_last_ack = 0;//s->in_bytes;
 
                 ngx_log_debug1(NGX_LOG_DEBUG_RTMP, c->log, 0,
                         "sending overflow rtmp ack(%uD)", s->in_bytes);
